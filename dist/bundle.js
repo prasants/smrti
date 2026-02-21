@@ -1725,9 +1725,8 @@ var G2Bridge = class {
 };
 
 // src/public/app.js
-var API_HOST = window.location.hostname || "localhost";
-var API = `http://${API_HOST}:7890`;
-var SERVER = `http://${API_HOST}:3000`;
+var API = `${window.location.origin}/recall`;
+var SERVER = window.location.origin;
 var state = "loading";
 var currentCard = null;
 var stats = null;

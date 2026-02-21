@@ -5,9 +5,10 @@
 
 import { G2Bridge } from './g2.js';
 
-const API_HOST = window.location.hostname || 'localhost';
-const API = `http://${API_HOST}:7890`;
-const SERVER = `http://${API_HOST}:3000`;
+// All API calls go through the Express server's /recall proxy
+// This avoids macOS firewall blocking Flask on a separate port
+const API = `${window.location.origin}/recall`;
+const SERVER = window.location.origin;
 
 // ─── State ─────────────────────────────────────────────────────────
 let state = 'loading'; // loading | stats | question | answer | done | ambient-wait | ambient-question | ambient-answer | meeting-prep

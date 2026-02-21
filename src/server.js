@@ -2,13 +2,39 @@ import express from 'express';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { execSync } from 'child_process';
+import http from 'http';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = process.env.PORT || 3000;
+const RECALL_PORT = 7890;
 
 app.use(express.static(join(__dirname, 'public')));
 app.use(express.static(join(__dirname, '..', 'dist')));
+
+// Reverse proxy: /recall/* → localhost:7890/*
+// This avoids macOS firewall issues (Flask only needs localhost, Express handles LAN)
+app.use('/recall', (req, res) => {
+  const options = {
+    hostname: '127.0.0.1',
+    port: RECALL_PORT,
+    path: req.url,
+    method: req.method,
+    headers: { ...req.headers, host: `127.0.0.1:${RECALL_PORT}` },
+  };
+
+  const proxy = http.request(options, (proxyRes) => {
+    res.writeHead(proxyRes.statusCode, proxyRes.headers);
+    proxyRes.pipe(res, { end: true });
+  });
+
+  proxy.on('error', (err) => {
+    console.error('[proxy] Recall Engine error:', err.message);
+    res.status(502).json({ error: 'Cannot reach Recall Engine on localhost:7890' });
+  });
+
+  req.pipe(proxy, { end: true });
+});
 
 /**
  * GET /api/meetings — upcoming meetings with attendees.
