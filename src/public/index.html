@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SMRTi</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <h1>स्मृति <span class="subtitle">SMRTi</span></h1>
+
+    <div id="status">Connecting…</div>
+
+    <div id="stats-area" class="hidden">
+      <div class="stats-grid">
+        <div class="stat">
+          <span class="stat-value" id="stats-due">0</span>
+          <span class="stat-label">due</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="stats-total">0</span>
+          <span class="stat-label">total</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="stats-retention">0%</span>
+          <span class="stat-label">retention</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="stats-streak">0</span>
+          <span class="stat-label">streak</span>
+        </div>
+      </div>
+      <button id="start-btn" class="primary-btn" onclick="startReview()">Start Review</button>
+    </div>
+
+    <div id="card-area" class="hidden">
+      <div id="deck-info"></div>
+      <div id="question"></div>
+      <button id="reveal-btn" class="primary-btn" onclick="reveal()">Reveal Answer</button>
+      <div id="answer" class="hidden"></div>
+      <div id="ratings" class="hidden">
+        <button onclick="rate(1)" class="rating-btn again">1 · Again</button>
+        <button onclick="rate(2)" class="rating-btn hard">2 · Hard</button>
+        <button onclick="rate(3)" class="rating-btn good">3 · Good</button>
+        <button onclick="rate(4)" class="rating-btn easy">4 · Easy</button>
+      </div>
+    </div>
+
+    <div id="done" class="hidden">
+      <div class="done-icon">🎉</div>
+      <div class="done-text">All done! <span id="done-count">0</span> cards reviewed</div>
+    </div>
+  </div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

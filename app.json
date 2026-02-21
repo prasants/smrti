@@ -1,0 +1,17 @@
+{
+  "package_id": "com.prasants.smrti",
+  "edition": "202602",
+  "name": "SMRTi",
+  "version": "1.0.0",
+  "min_app_version": "0.1.0",
+  "tagline": "Spaced repetition flashcards on your G2",
+  "description": "SMRTi (स्मृति) displays spaced repetition flashcards on your Even Realities G2 smart glasses. Powered by FSRS v6 scheduling. Review cards from your Obsidian vault using the R1 ring or TouchBar.",
+  "author": "Prasant S",
+  "entrypoint": "index.html",
+  "permissions": {
+    "network": [
+      "localhost:7890",
+      "127.0.0.1:7890"
+    ]
+  }
+}

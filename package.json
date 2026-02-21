@@ -1,0 +1,15 @@
+{
+  "name": "smrti",
+  "version": "1.0.0",
+  "description": "SMRTi — Spaced repetition flashcards for Even Realities G2 smart glasses",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "@evenrealities/even_hub_sdk": "^0.0.7",
+    "@evenrealities/evenhub-cli": "^0.1.5",
+    "@evenrealities/evenhub-simulator": "^0.4.1",
+    "express": "^4.21.0"
+  }
+}
