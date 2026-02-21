@@ -118,6 +118,8 @@ h1 .subtitle {
 .rating-btn.hard:hover  { border-color: #e67e22; color: #e67e22; }
 .rating-btn.good:hover  { border-color: #2ecc71; color: #2ecc71; }
 .rating-btn.easy:hover  { border-color: #3498db; color: #3498db; }
+.rating-btn.delete       { opacity: 0.6; font-size: 0.85em; }
+.rating-btn.delete:hover { border-color: #e74c3c; color: #e74c3c; opacity: 1; }
 
 /* Done */
 #done { text-align: center; padding: 3rem 0; }

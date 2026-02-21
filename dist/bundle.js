@@ -1753,6 +1753,13 @@ async function apiGet(path, base = API) {
     return null;
   }
 }
+async function apiDelete(path) {
+  try {
+    await fetch(`${API}${path}`, { method: "DELETE" });
+  } catch (err) {
+    console.error(`API DELETE ${path} failed:`, err);
+  }
+}
 async function apiPost(path, body) {
   try {
     await fetch(`${API}${path}`, {
@@ -1817,6 +1824,16 @@ async function submitRating(rating) {
   if (isG2 && g2) {
     await g2.store("smrti_session", { reviewCount, lastReview: (/* @__PURE__ */ new Date()).toISOString() });
   }
+  if (ambientConfig.enabled) {
+    enterAmbientWait();
+    return;
+  }
+  await enterQuestion();
+}
+async function deleteCurrentCard() {
+  if (!currentCard) return;
+  await apiDelete(`/cards/${currentCard.card_id}`);
+  currentCard = null;
   if (ambientConfig.enabled) {
     enterAmbientWait();
     return;
@@ -1917,7 +1934,8 @@ function handleG2Select(itemName) {
       if (itemName === "Reveal") enterAnswer();
       break;
     case "answer":
-      if (RATING_MAP[itemName]) submitRating(RATING_MAP[itemName]);
+      if (itemName === "Delete") deleteCurrentCard();
+      else if (RATING_MAP[itemName]) submitRating(RATING_MAP[itemName]);
       break;
     case "done":
       if (itemName === "Exit") g2.exit();
@@ -1926,7 +1944,8 @@ function handleG2Select(itemName) {
       if (itemName === "Reveal") enterAmbientAnswer();
       break;
     case "ambient-answer":
-      if (RATING_MAP[itemName]) submitRating(RATING_MAP[itemName]);
+      if (itemName === "Delete") deleteCurrentCard();
+      else if (RATING_MAP[itemName]) submitRating(RATING_MAP[itemName]);
       break;
     case "ambient-wait":
       if (itemName === "Stop") {
@@ -1975,7 +1994,7 @@ ${c.front}` : c.front, ["Reveal"]);
       break;
     }
     case "answer":
-      g2.showPage(currentCard.back, ["Again", "Hard", "Good", "Easy"]);
+      g2.showPage(currentCard.back, ["Again", "Hard", "Good", "Easy", "Delete"]);
       break;
     case "done":
       g2.showPage(`All done! \u{1F389}
@@ -1989,7 +2008,7 @@ ${c.front}`, ["Reveal"]);
       break;
     }
     case "ambient-answer":
-      g2.showPage(currentCard.back, ["Again", "Hard", "Good", "Easy"]);
+      g2.showPage(currentCard.back, ["Again", "Hard", "Good", "Easy", "Delete"]);
       break;
     case "ambient-wait": {
       const mins = ambientNextTime ? Math.max(0, Math.round((ambientNextTime - Date.now()) / 6e4)) : "?";
@@ -2151,6 +2170,7 @@ function renderBrowser(screen, errorMsg) {
 window.startReview = () => enterQuestion();
 window.reveal = () => enterAnswer();
 window.rate = (rating) => submitRating(rating);
+window.deleteCard = () => deleteCurrentCard();
 window.toggleAmbient = () => toggleAmbient();
 window.ambientReveal = () => enterAmbientAnswer();
 window.ambientRate = (rating) => submitRating(rating);
