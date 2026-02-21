@@ -31,7 +31,11 @@
           <span class="stat-label">streak</span>
         </div>
       </div>
-      <button id="start-btn" class="primary-btn" onclick="startReview()">Start Review</button>
+      <div id="meeting-banner" class="hidden"></div>
+      <div class="button-group">
+        <button id="start-btn" class="primary-btn" onclick="startReview()">Start Review</button>
+        <button class="secondary-btn" onclick="toggleAmbient()">☀ Ambient Mode</button>
+      </div>
     </div>
 
     <div id="card-area" class="hidden">
@@ -50,6 +54,34 @@
     <div id="done" class="hidden">
       <div class="done-icon">🎉</div>
       <div class="done-text">All done! <span id="done-count">0</span> cards reviewed</div>
+    </div>
+
+    <!-- Ambient Mode -->
+    <div id="ambient-area" class="hidden">
+      <div id="ambient-status" class="ambient-status">☀ Ambient Mode</div>
+      <div id="ambient-deck" class="deck-label"></div>
+      <div id="ambient-card" class="ambient-card"></div>
+      <button id="ambient-reveal-btn" class="primary-btn hidden" onclick="ambientReveal()">Reveal Answer</button>
+      <div id="ambient-answer" class="hidden ambient-answer"></div>
+      <div id="ambient-ratings" class="hidden">
+        <button onclick="ambientRate(1)" class="rating-btn again">1 · Again</button>
+        <button onclick="ambientRate(2)" class="rating-btn hard">2 · Hard</button>
+        <button onclick="ambientRate(3)" class="rating-btn good">3 · Good</button>
+        <button onclick="ambientRate(4)" class="rating-btn easy">4 · Easy</button>
+      </div>
+      <div id="ambient-countdown" class="ambient-countdown hidden"></div>
+      <button class="secondary-btn stop-btn" onclick="stopAmbient()">Stop Ambient</button>
+    </div>
+
+    <!-- Meeting Prep -->
+    <div id="meeting-area" class="hidden">
+      <div id="meeting-title" class="meeting-title"></div>
+      <div class="meeting-card">
+        <div id="meeting-name" class="meeting-name"></div>
+        <div id="meeting-email" class="meeting-email"></div>
+        <div id="meeting-details" class="meeting-details"></div>
+      </div>
+      <button id="meeting-next-btn" class="primary-btn" onclick="meetingNext()">Next →</button>
     </div>
   </div>
   <script type="module" src="app.js"></script>
