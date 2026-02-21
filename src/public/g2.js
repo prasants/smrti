@@ -3,6 +3,8 @@
  * Handles all communication with Even Realities G2 smart glasses via the SDK.
  */
 
+import { waitForEvenAppBridge } from '@evenrealities/even_hub_sdk';
+
 const DISPLAY_W = 576;
 const DISPLAY_H = 136;
 
@@ -21,8 +23,7 @@ export class G2Bridge {
    */
   async connect() {
     try {
-      const sdk = await import('@evenrealities/even_hub_sdk');
-      this.bridge = await sdk.waitForEvenAppBridge();
+      this.bridge = await waitForEvenAppBridge();
       console.log('[G2] Bridge connected');
 
       // Listen for events
