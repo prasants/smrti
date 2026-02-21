@@ -13,6 +13,7 @@ export class G2Bridge {
     this.bridge = null;
     this.initialized = false; // tracks whether createStartUpPageContainer has been called
     this.onListSelect = null; // callback: (itemName) => void
+    this.onSystemTap = null;  // callback: (eventType) => void — for ring/back-tap
     this.unsubEvents = null;
     this.unsubDevice = null;
   }
@@ -26,10 +27,37 @@ export class G2Bridge {
       this.bridge = await waitForEvenAppBridge();
       console.log('[G2] Bridge connected');
 
-      // Listen for events
+      // Listen for events — log everything for debugging, handle list + sys + text
       this.unsubEvents = this.bridge.onEvenHubEvent((event) => {
-        if (event.listEvent && this.onListSelect) {
-          this.onListSelect(event.listEvent.currentSelectItemName);
+        console.log('[G2] Event received:', JSON.stringify(event));
+
+        // List item selection (scroll/click on a list container)
+        if (event.listEvent) {
+          const le = event.listEvent;
+          console.log('[G2] List event:', le.currentSelectItemName, 'type:', le.eventType);
+          if (le.eventType === 0 && this.onListSelect) {
+            // CLICK_EVENT on list item
+            this.onListSelect(le.currentSelectItemName);
+          } else if (le.eventType === 3 && this.onListSelect) {
+            // DOUBLE_CLICK_EVENT — treat same as click
+            this.onListSelect(le.currentSelectItemName);
+          }
+        }
+
+        // System events (ring tap, back-tap zone, foreground/background)
+        if (event.sysEvent) {
+          const se = event.sysEvent;
+          console.log('[G2] Sys event type:', se.eventType);
+          // CLICK (0) or DOUBLE_CLICK (3) = select first action
+          if ((se.eventType === 0 || se.eventType === 3) && this.onSystemTap) {
+            this.onSystemTap(se.eventType);
+          }
+        }
+
+        // Text container events
+        if (event.textEvent) {
+          const te = event.textEvent;
+          console.log('[G2] Text event:', te.containerName, 'type:', te.eventType);
         }
       });
 

@@ -501,6 +501,23 @@ document.addEventListener('keydown', (e) => {
 
   if (isG2) {
     g2.onListSelect = handleG2Select;
+    // System tap (ring/back-tap) — select the first/primary action
+    g2.onSystemTap = (eventType) => {
+      console.log('[SMRTi] System tap, eventType:', eventType);
+      // Map system taps to the primary action for current state
+      const primaryAction = {
+        'stats': 'Start Review',
+        'question': 'Reveal',
+        'answer': 'Good',
+        'done': 'Exit',
+        'ambient-question': 'Reveal',
+        'ambient-answer': 'Good',
+        'ambient-wait': 'Stop',
+        'meeting-prep': 'Next',
+      };
+      const action = primaryAction[state];
+      if (action) handleG2Select(action);
+    };
     console.log('[SMRTi] Running in G2 mode');
   } else {
     console.log('[SMRTi] Running in browser mode');

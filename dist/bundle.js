@@ -1566,6 +1566,7 @@ var G2Bridge = class {
     this.bridge = null;
     this.initialized = false;
     this.onListSelect = null;
+    this.onSystemTap = null;
     this.unsubEvents = null;
     this.unsubDevice = null;
   }
@@ -1578,8 +1579,26 @@ var G2Bridge = class {
       this.bridge = await pe();
       console.log("[G2] Bridge connected");
       this.unsubEvents = this.bridge.onEvenHubEvent((event) => {
-        if (event.listEvent && this.onListSelect) {
-          this.onListSelect(event.listEvent.currentSelectItemName);
+        console.log("[G2] Event received:", JSON.stringify(event));
+        if (event.listEvent) {
+          const le = event.listEvent;
+          console.log("[G2] List event:", le.currentSelectItemName, "type:", le.eventType);
+          if (le.eventType === 0 && this.onListSelect) {
+            this.onListSelect(le.currentSelectItemName);
+          } else if (le.eventType === 3 && this.onListSelect) {
+            this.onListSelect(le.currentSelectItemName);
+          }
+        }
+        if (event.sysEvent) {
+          const se2 = event.sysEvent;
+          console.log("[G2] Sys event type:", se2.eventType);
+          if ((se2.eventType === 0 || se2.eventType === 3) && this.onSystemTap) {
+            this.onSystemTap(se2.eventType);
+          }
+        }
+        if (event.textEvent) {
+          const te2 = event.textEvent;
+          console.log("[G2] Text event:", te2.containerName, "type:", te2.eventType);
         }
       });
       this.unsubDevice = this.bridge.onDeviceStatusChanged((status) => {
@@ -2161,6 +2180,21 @@ document.addEventListener("keydown", (e) => {
   isG2 = await g2.connect();
   if (isG2) {
     g2.onListSelect = handleG2Select;
+    g2.onSystemTap = (eventType) => {
+      console.log("[SMRTi] System tap, eventType:", eventType);
+      const primaryAction = {
+        "stats": "Start Review",
+        "question": "Reveal",
+        "answer": "Good",
+        "done": "Exit",
+        "ambient-question": "Reveal",
+        "ambient-answer": "Good",
+        "ambient-wait": "Stop",
+        "meeting-prep": "Next"
+      };
+      const action = primaryAction[state];
+      if (action) handleG2Select(action);
+    };
     console.log("[SMRTi] Running in G2 mode");
   } else {
     console.log("[SMRTi] Running in browser mode");
